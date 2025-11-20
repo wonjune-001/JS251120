@@ -6,6 +6,16 @@ canvas.height = window.innerHeight;
 
 const snowflakes = [];
 
+const mouse = {
+    x: undefined,
+    y: undefined
+};
+
+window.addEventListener('mousemove', (event) => {
+    mouse.x = event.x;
+    mouse.y = event.y;
+});
+
 function createSnowflakes() {
     const snowflakeCount = 500;
     for (let i = 0; i < snowflakeCount; i++) {
@@ -13,7 +23,8 @@ function createSnowflakes() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             radius: Math.random() * 4 + 1,
-            density: Math.random() + 1
+            density: Math.random() + 1,
+            wind: Math.random() * 1 - 0.5
         });
     }
 }
@@ -33,9 +44,30 @@ function drawSnowflakes() {
 function moveSnowflakes() {
     for (const snowflake of snowflakes) {
         snowflake.y += snowflake.density;
+        snowflake.x += snowflake.wind;
+
+        if (mouse.x !== undefined && mouse.y !== undefined) {
+            const dx = snowflake.x - mouse.x;
+            const dy = snowflake.y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 50) {
+                const forceDirectionX = dx / distance;
+                const forceDirectionY = dy / distance;
+                const force = (50 - distance) / 50;
+                snowflake.x += forceDirectionX * force * 5;
+                snowflake.y += forceDirectionY * force * 5;
+            }
+        }
+
         if (snowflake.y > canvas.height) {
             snowflake.y = 0;
             snowflake.x = Math.random() * canvas.width;
+        }
+        if (snowflake.x > canvas.width) {
+            snowflake.x = 0;
+        }
+        if (snowflake.x < 0) {
+            snowflake.x = canvas.width;
         }
     }
 }
@@ -54,3 +86,15 @@ window.addEventListener('resize', () => {
 
 createSnowflakes();
 animate();
+
+const heading = document.querySelector('h1');
+
+heading.addEventListener('mouseover', () => {
+    heading.style.color = '#aaccff';
+    heading.style.textShadow = '0 0 10px #ffffff';
+});
+
+heading.addEventListener('mouseout', () => {
+    heading.style.color = 'white';
+    heading.style.textShadow = 'none';
+});
