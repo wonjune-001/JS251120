@@ -1,102 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
-
-:root {
-    --bg-color: #1a1a1a;
-    --primary-color: #f0f0f0;
-    --card-bg-color: #2a2a2a;
-    --glow-color: rgba(255, 255, 255, 0.1);
-}
-
-* {
+body, html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+#snow-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.welcome-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.2rem;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--primary-color);
-    overflow-x: hidden;
-    cursor: none; /* Hide the default cursor */
-}
-
-/* Custom cursor glow effect */
-#cursor-glow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--glow-color);
-    box-shadow: 0 0 20px 10px var(--glow-color);
-    pointer-events: none; /* Make sure it doesn't interfere with clicks */
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out;
-    z-index: 9999;
-}
-
-
-.hero {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.main-title {
-    font-size: 4rem;
-    font-weight: 600;
-    transition: opacity 1s ease-out, transform 1s ease-out;
-}
-
-.content-section {
-    padding: 50px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-}
-
-.card {
-    background-color: var(--card-bg-color);
-    padding: 40px;
-    border-radius: 15px;
-    width: 80%;
-    max-width: 600px;
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.card h2 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-.card p {
-    font-size: 1rem;
-    font-weight: 300;
-}
-
-/* Animation states */
-.hidden {
-    opacity: 0;
-    transform: translateY(50px);
-}
-
-.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-    .main-title {
-        font-size: 2.5rem;
-    }
-    .card {
-        width: 90%;
-    }
+    background-image: url('https://cdn.pixabay.com/photo/2017/12/11/18/22/snow-3012579_1280.jpg');
+    background-size: cover;
+    background-position: center;
 }

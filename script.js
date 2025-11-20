@@ -1,45 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
+const canvas = document.getElementById('snow-canvas');
+const ctx = canvas.getContext('2d');
 
-    // 1. Cursor Glow Effect
-    const cursorGlow = document.getElementById('cursor-glow');
-    document.addEventListener('mousemove', (e) => {
-        // Use transform for better performance
-        cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    });
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    // 2. Main Title Animation on Load
-    const mainTitle = document.querySelector('.main-title');
-    // We use a small timeout to ensure the CSS is loaded before we change the class
-    setTimeout(() => {
-        mainTitle.classList.remove('hidden');
-        mainTitle.classList.add('visible');
-    }, 100);
+const snowflakes = [];
 
-    // 3. Scroll-based Animations for Cards
-    const observerOptions = {
-        root: null, // use the viewport as the root
-        rootMargin: '0px',
-        threshold: 0.1 // trigger when 10% of the element is visible
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.remove('hidden');
-                entry.target.classList.add('visible');
-                // Stop observing the element once it's visible
-                observer.unobserve(entry.target);
-            }
+function createSnowflakes() {
+    const snowflakeCount = 500;
+    for (let i = 0; i < snowflakeCount; i++) {
+        snowflakes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 4 + 1,
+            density: Math.random() + 1
         });
-    }, observerOptions);
+    }
+}
 
-    // Observe all elements with the 'hidden' class
-    const hiddenElements = document.querySelectorAll('.hidden');
-    hiddenElements.forEach(el => {
-        // Don't observe the main title again, it's already handled
-        if (!el.classList.contains('main-title')) {
-            observer.observe(el);
+function drawSnowflakes() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    for (const snowflake of snowflakes) {
+        ctx.moveTo(snowflake.x, snowflake.y);
+        ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2, true);
+    }
+    ctx.fill();
+    moveSnowflakes();
+}
+
+function moveSnowflakes() {
+    for (const snowflake of snowflakes) {
+        snowflake.y += snowflake.density;
+        if (snowflake.y > canvas.height) {
+            snowflake.y = 0;
+            snowflake.x = Math.random() * canvas.width;
         }
-    });
+    }
+}
 
+function animate() {
+    drawSnowflakes();
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    snowflakes.length = 0;
+    createSnowflakes();
 });
+
+createSnowflakes();
+animate();
