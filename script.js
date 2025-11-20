@@ -99,4 +99,37 @@ document.addEventListener('DOMContentLoaded', () => {
         heading.style.color = 'white';
         heading.style.textShadow = 'none';
     });
+
+    const iceCanvas = document.getElementById('ice-canvas');
+    const iceCtx = iceCanvas.getContext('2d');
+    iceCanvas.width = window.innerWidth;
+    iceCanvas.height = window.innerHeight;
+
+    function drawCracks() {
+        iceCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        iceCtx.lineWidth = 2;
+        for (let i = 0; i < 5; i++) {
+            iceCtx.beginPath();
+            iceCtx.moveTo(Math.random() * iceCanvas.width, Math.random() * iceCanvas.height);
+            iceCtx.lineTo(Math.random() * iceCanvas.width, Math.random() * iceCanvas.height);
+            iceCtx.stroke();
+        }
+    }
+
+    function freezeScreen() {
+        let freezeAmount = 0;
+        const freezeAnimation = () => {
+            freezeAmount += 0.01;
+            iceCtx.fillStyle = `rgba(255, 255, 255, ${freezeAmount})`;
+            iceCtx.fillRect(0, 0, iceCanvas.width, iceCanvas.height);
+            if (freezeAmount < 0.8) {
+                requestAnimationFrame(freezeAnimation);
+            } else {
+                drawCracks();
+            }
+        };
+        requestAnimationFrame(freezeAnimation);
+    }
+
+    setTimeout(freezeScreen, 3000);
 });
