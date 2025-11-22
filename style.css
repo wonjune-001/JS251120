@@ -8,15 +8,7 @@ body {
 
 .snowflake {
     position: absolute;
-    top: -20px;
     background-color: #fff;
     border-radius: 50%;
-    opacity: 0.8;
-    animation: fall linear infinite;
-}
-
-@keyframes fall {
-    to {
-        transform: translateY(105vh);
-    }
+    pointer-events: none;
 }
