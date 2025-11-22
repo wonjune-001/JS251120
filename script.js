@@ -2,20 +2,25 @@ const body = document.body;
 const numSnowflakes = 150;
 const snowflakes = [];
 
-const mouse = {
-    x: null,
-    y: null,
-    radius: 100 // Interaction radius around the cursor
+// Global wind object, controlled by the mouse
+const wind = {
+    x: 0,
+    y: 1 // Base vertical speed
 };
 
+const maxWindX = 4; // Maximum horizontal wind speed
+
 window.addEventListener('mousemove', (event) => {
-    mouse.x = event.x;
-    mouse.y = event.y;
+    // Calculate wind based on mouse position relative to center of the screen
+    // Mouse on left half -> wind blows right. Mouse on right half -> wind blows left.
+    const centerX = window.innerWidth / 2;
+    const influence = (event.x - centerX) / centerX; // -1 to 1
+    wind.x = influence * maxWindX * -1;
 });
 
 window.addEventListener('mouseout', () => {
-    mouse.x = null;
-    mouse.y = null;
+    // Reset wind when mouse leaves
+    wind.x = 0;
 });
 
 
@@ -30,51 +35,30 @@ function createSnowflakes() {
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
             size: Math.random() * 4 + 2, // 2px to 6px
-            speed: Math.random() * 1.5 + 0.5, // 0.5 to 2
-            // Add a horizontal "wind" speed
-            wind: (Math.random() - 0.5) * 1.5,
-            originalWind: (Math.random() - 0.5) * 1.5,
-            opacity: Math.random() * 0.75 + 0.25, // 0.25 to 1.0
+            // Individual speed variation
+            speed: Math.random() * 1.5 + 0.5,
+            opacity: Math.random() * 0.75 + 0.25,
         });
     }
 }
 
 function animateSnow() {
     for (const flake of snowflakes) {
-        // Update position
-        flake.y += flake.speed;
-        flake.x += flake.wind;
+        // Update position based on global wind and individual speed
+        flake.y += wind.y * flake.speed;
+        flake.x += wind.x;
 
-        // Mouse interaction
-        if (mouse.x !== null) {
-            const dx = mouse.x - flake.x;
-            const dy = mouse.y - flake.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < mouse.radius) {
-                const forceDirectionX = dx / distance;
-                const forceDirectionY = dy / distance;
-                // Make the force stronger the closer the flake is
-                const force = (mouse.radius - distance) / mouse.radius;
-                const directionX = forceDirectionX * force * -5; // Repel force
-                const directionY = forceDirectionY * force * -5;
-                
-                // Apply the force
-                flake.x += directionX;
-                flake.y += directionY;
-            }
-        }
 
         // Reset flakes that go off-screen
         if (flake.y > window.innerHeight) {
             flake.y = -flake.size;
             flake.x = Math.random() * window.innerWidth;
         }
-        if (flake.x > window.innerWidth) {
+        if (flake.x > window.innerWidth + 20) { // Add buffer for wind
             flake.x = -flake.size;
         }
-        if (flake.x < -flake.size) {
-            flake.x = window.innerWidth;
+        if (flake.x < -20) { // Add buffer for wind
+            flake.x = window.innerWidth + flake.size;
         }
 
 
